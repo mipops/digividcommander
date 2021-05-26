@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+  <head>
+      <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title> | DVRescue</title>
+      <meta name="viewport" content="width=device-width">
+      <link rel="stylesheet" href="/css/syntax.css">
+      <link rel="stylesheet" href="/css/main.css">
+      <link rel="stylesheet" href="/css/responsive.css">
+      <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico">
+      <link href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300;0,400;0,500;0,700;0,900;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet"> 
+  </head>
+  <body>
+    <div class="site">
+      <div class="sidebar" id="sidebar">
+        <div class="header">
+          <h1 class="title"><a href="/index.html"><img id="logo" src="/images/mipopslogo.png"></a></h1>
+          <span class="tagline"></span>
+        </div>
+        <div class="posts">
+          <div class="search">
+            <form action="/search.html" method="get">
+              <input type="text" id="search_box" class="search-box" name="query">
+              <input type="submit" class="search-button" value="search">
+            </form>
+          </div>
+        </div>
+        <div class="posts">
+          <ul class="posts-list">
+            <!-- These are hardcoded but don't have to be, but we will need a final order -->
+            <li><a href="/index.html">Home</a></li>
+          </ul>
+        </div>
+        <div class="footer">
+          <span id="footer-links">
+            <p>
+              Brought to you by 
+              <a href="https://www.mipops.org" class="footer-link">MIPoPS</a>
+            </p>
+            <p>
+              <img src="/images/neh.jpg" id="neh-logo"><br>
+              This resource has been made possible in part by the National Endowment for the Humanities: Exploring the human endeavor
+            </p>
+          </span>
+        </div>
+      </div>
+        <div class="content" id="home">
+  <div id="sidebar-button">
+    <img alt="sidebar button" src="/images/sidebar-button.png">
+  </div>
+  <div id="post-info">
+    <div id="info-container">
+      <h1 id="title"></h1>
+    </div>
+  </div>
+<br/>
+  <div class="post">
+    <h1 class="search-results-header">Search Results</h1>
+
+<div>
+  <form action="/search.html" method="get">
+    <input type="text" id="search-box" class="search-box" name="query">
+    <input type="submit" class="search-button" value="search">
+  </form>
+</div>
+
+<ul id="search-results"></ul>
+
+<script>
+  window.store = {
+    
+      "sections-01-introduction-html": {
+        "title": "Introduction",
+        "namevar": null,
+        "categories": [],
+        "tags": [],
+        "content": "IntroductionProjectMoving Image Preservation of Puget Sound (MIPoPS) has been awarded funds via a Tier II National Endowment for the Humanities Research and Development (NEH R&amp;D) grant to expand the DV Rescue project’s scope beyond its focus on the DV family of videotapes, to build upon our findings and community work, and to encompass the development of new preservation strategies and tools for most digital videotape formats. This expansion project, Digital Video Commander, will entail two years of work to research the challenges and opportunities of digital videotape preservation, develop open-source and freely available software, facilitate user testing, and create documentation to help define and perform comprehensive, automated, and intuitive data migration techniques. MIPoPS will collaborate with RiceCapades, a consulting and development company, and nine partner institutions currently collecting digital videotape to conduct research, define preservation workflows, establish standards, and develop the most impactful, preservation-efficient, and user-friendly tools for capturing content from these digital videotape formats.The Digital Video Commander project seeks to reframe the entire paradigm of preservation when applied to digital videotapes rather than adopt upon the practices used for analog videotape. Capturing the contents of a digital videotape does not need to be as restrained as attempting to record an ideal, singular presentation of a videotape, but there is a potential that such effort could mimic the more accurate data transfers of hard drives or sectored optical discs where the quality of the data transferred could be verified piece-by-piece and retried as needed to create a more accurate result.During the NEH R&amp;D funded project, DV Rescue, MIPoPS has found that digitization software does not need to solely work as a diligent scribe that documents the contents recorded on legacy videotapes, but that such software can take control of the hardware, guide the user, automate actions, and orchestrate the entire reformatting event. Such an approach requires skilled development, but the results place this essential preservation practice within reach for more collecting institutions who would benefit from it while producing more accurate representations of digital videotape contents than is currently feasible with more traditional workflows. Additionally, whereas expert calibration of analog signals is essential for presenting data loss while digitizing analog videotapes, the opposite is somewhat true for digital videotapes, where signal manipulation of the digital videotape decoding adds generational loss rather than accuracy. We see that the characteristics of digital videotape provide an opportunity for automation, ease, and increased accuracy within the preservation of digital videotapes and the potential to promote project results in a way that reduces barriers for institutions seeking to establish in-house audiovisual preservation services.We seek support from the National Endowment for the Humanities in order to generate, document, and disseminate these new tools, which will benefit the entire audiovisual preservation field, and in turn, benefit all areas of the humanities that relied on digital videotape as a form of source material and documentation, therefore saving valuable historic content from extinction.",
+        "url": "/sections/01_introduction.html"
+      }
+      ,
+    
+      "sections-dv-formats-html": {
+        "title": "DV Formats",
+        "namevar": null,
+        "categories": [],
+        "tags": [],
+        "content": "This is a work in progress!",
+        "url": "/sections/dv_formats.html"
+      }
+      ,
+    
+      "sections-dvrescue-html": {
+        "title": "DVRescue",
+        "namevar": null,
+        "categories": [],
+        "tags": [],
+        "content": "See the Github README for the latest on DVRescue tools and how to use them.dvloupedvmapdvpackagerdvplaydvrescue.xsddvsampler",
+        "url": "/sections/dvrescue.html"
+      }
+      ,
+    
+      "sections-glossary-html": {
+        "title": "Glossary",
+        "namevar": null,
+        "categories": [],
+        "tags": [],
+        "content": "DVRescue Glossary TermsadapterA small piece of computer hardware that connects to a port on another device to provide it with additional functionality, or enable a pass-through to such a device that adds functionality. Specifically used here to reference connecting DV decks to computers through various combinations of inputs and outputs to enable a Firewire connection. See also dongle.arbitrary bit inconsistencyarchival formatA video format that provides reliable playback, without information loss. The format should be a current (as opposed to obsolescent) professional one supported by the industry. At present archival video material is typically stored on magnetic tape however in the near future computer-based storage is likely to become an option for archives. The advantage of uncompressed digital formats over analog formats is that they can be copied without generational loss. For this reason many archives are using digital formats for creating their archival masters. Ideally these formats should be uncompressed, component formats; however, for practical and cost reasons for suitable archival formats will change as older formats become obsolete and are no longer supported. Ideally, archival master material is transferred onto new stock every 5-7 years and at this point a decision should be made about whether it is necessary to move to a new format as well. An archival format is therefore one that can be migrated onto new stock and new formats without the loss or distortion of information.artifactAn undesirable picture element in a video image, which may naturally occur in the recording process and must be eliminated in order to achieve a high quality image. Most common artifacts are cross-color and cross-luminance. Not to be confused with artifact as a cultural product. See A/V Artifact Atlas DV sections for specific artifacts, details and possible troubleshooting.bitShorthand for binary digit, which has two optional values “0” or “1.” Eight bits means 8 binary digits. There are 256 possible combinations for 8 binary digits and therefore color depth of 8 bits represents 256 (2x2x2x2x2x2x2x2) possible colors. Because each pixel of a video picture contains 3 samples Y’, R-Y’, B-Y’, the possible colors of an 8-bit system would be 16.7 million (256 x 256 x 256). Nowadays archives will be receiving digital material into their collections or will be generating it as part of their preservation program. It is therefore necessary that we understand digital and analog technology.bit rateThe amount of data transported in a given amount of time, usually defined in Mega (Million) bits per second (Mbps). Bit rate is one way to define the amount of compression used on a video signal.bit error rate (BER)The percentage of bits that have errors in playback. One possible indicator for the deteriorationPlayback is never perfect and there are many possible causes of error such as noise, dirt and dust, and drop out. In the binary world of digital data a bit is either correct or incorrect. Since it only has two states, the challenge is to correctly identify whether a bit is correct or not. To enable this the data is therefore coded by adding redundant bits. All systems build in redundancy and error correction mechanisms. Information about bit error rates can refer to the bit error rate prior to error correction or the residual errors after error correction.bit streamcamcordercaptureTransfering or capturing the video, audio and data content from a DV videotape to a file . Since DV already contains digital components, this process is not referred to as “digitizing” as it is for analog videotapes. See transfer.cassettecassette doorchroma subsamplingdeckDIF incoherencyDIF sequencedongleA small piece of computer hardware that connects to a port on another device to provide it with additional functionality, or enable a pass-through to such a device that adds functionality. Specifically used here to reference connecting DV decks to computers through various combinations of inputs and outputs to enable a Firewire connection. See also adapter.dropoutBrief signal loss caused by a tape head clog, defect in the tape, debris, or other feature that causes an increase in the head-to-tape spacing. A dropout can also be caused by missing magnetic or digital material. A video dropout generally appears in the following ways:Pink &amp; greenInformation repeated from prior/successive framesdropped frameDVSee DV Format Guide for additional information on the variety of digital videotape formats and the specifics of each.error concealmentfile containerframeframe aspect ratioThe same frame size is used for 4:3 and 16:9 frame aspect ratios, resulting in different pixel aspect ratios for fullscreen and widescreen video.frame rateHDVSee DV Format Guide for additional information on the variety of digital videotape formats and the specifics of each.IEEE 1394 interfaceinterlaced scanningA technique for doubling the perceived frame rate of a video display without consuming extra bandwidth. The interlaced signal contains two fields of a video frame captured consecutively. This enhances motion perception to the viewer, and reduces flicker by taking advantage of the phi phenomenon.intraframe video compressionIntra-frame coding is used in video coding (compression). It is part of an intra-frame codec like ProRes: a group of pictures codec without inter frames. For more information, click here.long play (LP)lossy compressionThe class of data encoding methods that uses inexact approximations and partial data discarding to represent the content. These techniques are used to reduce data size for storing, handling, and transmitting content. The different versions of the photo of the cat to the right show how higher degrees of approximation create coarser images as more details are removed. This is opposed to lossless data compression (reversible data compression) which does not degrade the data. The amount of data reduction possible using lossy compression is much higher than through lossless techniques. For more information, click here.parity dataplaybackprogressive recordingraw DV streamtimecodetimecode inconsistencytimecode jumptransferTransfering or capturing the video, audio and data content from a DV videotape to a file . Since DV already contains digital components, this process is not referred to as “digitizing” as it is for analog videotapes. See capture.video codecwrapper",
+        "url": "/sections/glossary.html"
+      }
+      
+    
+  };
+</script>
+<script src="/js/lunr.min.js"></script>
+<script src="/js/search.js"></script>
+
+  </div>
+</div>
+
+
+    </div>
+    <script src="/scripts/responsive.js" type="text/javascript"></script>
+  </body>
+</html>
