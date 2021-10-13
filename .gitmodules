@@ -1,0 +1,3 @@
+[submodule "tools/sony9pin/Sony9PinRemote"]
+	path = tools/sony9pin/Sony9PinRemote
+	url = https://github.com/hideakitai/Sony9PinRemote.git
