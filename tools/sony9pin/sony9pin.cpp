@@ -22,6 +22,7 @@ QSerialPort serialPort;
 void options(const char* const prefix = "") {
   std::cerr << prefix << "Options:\n"
     << prefix << "-v: verbose mode\n"
+    << prefix << "-h: show help\n"
     ;
 }
 
@@ -374,35 +375,43 @@ void interactive(bool& is_interactive) {
 
 int main(int argc, char* argv[]) {
   QCoreApplication coreApplication(argc, argv);
-  const int argumentCount = QCoreApplication::arguments().size();
-  const QStringList argumentList = QCoreApplication::arguments();
-  int argumentPos = 0;
+  QStringList argumentList = QCoreApplication::arguments();
 
-  if (argumentCount == 1) {
-    usage(argumentList.at(argumentPos).toStdString());
-    return 1;
-  }
-  argumentPos++;
+  QString commandName;
+  if (!argumentList.isEmpty())
+    commandName = argumentList.takeFirst();
 
   bool verbose = false;
-  if (argumentList.at(argumentPos) == "-v") {
-    verbose = true;
-    cerr << "Info: verbose mode.\n";
-    argumentPos++;
+  while (!argumentList.isEmpty())
+  {
+    if (argumentList.first() == "-h") {
+      usage(commandName.toStdString());
+      return 0;
+    }
+    else if (argumentList.first() == "-v") {
+        verbose = true;
+        cerr << "Info: verbose mode.\n";
+        argumentList.removeFirst();
+    }
+    else
+        break;
   }
 
-  const auto& serialPortName = argumentList.at(argumentPos);
+  if (argumentList.isEmpty()) {
+    usage(commandName.toStdString());
+    return 1;
+  }
+
+  const auto& serialPortName = argumentList.takeFirst();
   if (auto result = setup(serialPortName, verbose)) {
     return result;
   }
-  argumentPos++;
 
   auto is_interactive = false;
-  if (argumentPos == argumentCount) {
+  if (argumentList.isEmpty()) {
     interactive(is_interactive);
-    argumentPos--;
   }
-  while (argumentPos < argumentCount) {
+  while (!argumentList.isEmpty() || is_interactive) {
     if (const auto result = ready(verbose)) {
       return result;
     }
@@ -411,7 +420,7 @@ int main(int argc, char* argv[]) {
       cin.get(value);
       cin.ignore(1024, '\n');
     } else {
-      const auto& argument = argumentList[argumentPos];
+      const auto& argument = argumentList.takeFirst();
       value = argument[0].toLatin1();
     }
     switch (value) {
@@ -488,10 +497,6 @@ int main(int argc, char* argv[]) {
       default: {
         std::cerr << "Error: unknown command " << value << ".\n ";
       }
-    }
-
-    if (!is_interactive) {
-      argumentPos++;
     }
   }
 
