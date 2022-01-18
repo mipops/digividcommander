@@ -19,6 +19,13 @@ Sony9PinRemote::Controller deck;
 
 QSerialPort serialPort;
 
+void options(const char* const prefix = "") {
+  std::cerr << prefix << "Options:\n"
+    << prefix << "-v: verbose mode\n"
+    << prefix << "-h: show help\n"
+    ;
+}
+
 void commands(const char* const prefix = "") {
   std::cerr << prefix << "Commands:\n"
     << prefix << "-: interactive (1-char command then enter)\n"
@@ -37,7 +44,8 @@ void commands(const char* const prefix = "") {
 }
 
 void help(const string& commandName) {
-  std::cerr << "Usage: " << commandName << " <SerialPortName/SerialPortIndex> [command].\n";
+  std::cerr << "Usage: " << commandName << " [option] <SerialPortName/SerialPortIndex> [command].\n";
+  options();
   commands();
 }
 
@@ -52,7 +60,33 @@ void usage(const string& commandName) {
   }
 }
 
-int setup(const QString& serialPortName) {
+void print_timecode(const Sony9PinRemote::TimeCode& tc)
+{
+  cerr << "TimeCode: "
+       << setw(2) << setfill('0') << (unsigned int)tc.hour << ':'
+       << setw(2) << setfill('0') << (unsigned int)tc.minute << ':'
+       << setw(2) << setfill('0') << (unsigned int)tc.second << ';'
+       << setw(2) << setfill('0') << (unsigned int)tc.frame << ' '
+       << "CF: " << (unsigned int)tc.is_cf << ' '
+       << "DF: " << (unsigned int)tc.is_df << '\n';
+}
+
+void print_userbits(const Sony9PinRemote::UserBits& ub)
+{
+  cerr << "UserBits: "
+       << (char)ub.bytes[0] << ' '
+       << (char)ub.bytes[1] << ' '
+       << (char)ub.bytes[2] << ' '
+       << (char)ub.bytes[3] << '\n';
+}
+
+void print_timecode_userbits(const Sony9PinRemote::TimeCodeAndUserBits& tcub)
+{
+    print_timecode(tcub.tc);
+    print_userbits(tcub.ub);
+}
+
+int setup(const QString& serialPortName, bool verbose) {
   // Config
   bool portNumberIsOk = false;
   const auto portNumber = serialPortName.toInt(&portNumberIsOk);
@@ -71,7 +105,7 @@ int setup(const QString& serialPortName) {
   serialPort.setParity(QSerialPort::OddParity);
 
   // Open
-  if (true) {
+  if (verbose) {
     std::cerr << "Info: open device " << serialPort.portName().toStdString() << ".\n";
   }
   if (!serialPort.open(QIODevice::ReadWrite)) {
@@ -80,16 +114,16 @@ int setup(const QString& serialPortName) {
   }
   //QThread::msleep(2000);
   deck.attach(serialPort);
-  if (true) {
+  if (verbose) {
     std::cerr << "Info: open device OK.\n";
   }
 
   return 0;
 }
 
-int status(){
+int status(bool verbose){
   // Device status
-  if (true) {
+  if (verbose) {
     std::cerr << "Info: get device status.\n";
   }
   deck.status_sense();
@@ -121,8 +155,8 @@ int status(){
   return 0;
 }
 
- int type() {
-  if (true) {
+ int type(bool verbose) {
+  if (verbose) {
     std::cerr << "Info: get device type.\n";
   }
   deck.device_type_request();
@@ -151,9 +185,9 @@ int status(){
   return 0;
 }
 
-int ready() {
+int ready(bool verbose) {
   while (!deck.ready()) {
-    if (true) {
+    if (verbose) {
       std::cout << "Info: deck is not ready, waiting." << std::endl;
     }
     if (deck.parse_until(1000)) {
@@ -163,8 +197,8 @@ int ready() {
   return 0;
 }
 
-int eject() {
-  if (true) {
+int eject(bool verbose) {
+  if (verbose) {
     std::cout << "Info: eject." << std::endl;
   }
   deck.eject();
@@ -181,8 +215,8 @@ int eject() {
   return 0;
 }
 
-int fast_forward() {
-  if (true) {
+int fast_forward(bool verbose) {
+  if (verbose) {
     std::cout << "Info: fast_forward." << std::endl;
   }
   deck.fast_forward();
@@ -199,8 +233,8 @@ int fast_forward() {
   return 0;
 }
 
-int play() {
-  if (true) {
+int play(bool verbose) {
+  if (verbose) {
     std::cout << "Info: play." << std::endl;
   }
   deck.play();
@@ -217,8 +251,8 @@ int play() {
   return 0;
 }
 
-int rewind() {
-  if (true) {
+int rewind(bool verbose) {
+  if (verbose) {
     std::cout << "Info: rewind." << std::endl;
   }
   deck.rewind();
@@ -235,8 +269,8 @@ int rewind() {
   return 0;
 }
 
-int stop() {
-  if (true) {
+int stop(bool verbose) {
+  if (verbose) {
     std::cout << "Info: stop." << std::endl;
   }
   deck.stop();
@@ -253,8 +287,8 @@ int stop() {
   return 0;
 }
 
-int timer1() {
-  if (true) {
+int timer1(bool verbose) {
+  if (verbose) {
     std::cout << "Info: timer1." << std::endl;
   }
   deck.current_time_sense_timer1();
@@ -268,13 +302,13 @@ int timer1() {
     deck.print_nak();
   }
 
-  deck.print_timecode();
+  print_timecode(deck.timecode());
 
   return 0;
 }
 
-int timer2() {
-  if (true) {
+int timer2(bool verbose) {
+  if (verbose) {
     std::cout << "Info: timer2." << std::endl;
   }
   deck.current_time_sense_timer2();
@@ -288,13 +322,13 @@ int timer2() {
     deck.print_nak();
   }
 
-  deck.print_timecode();
+  print_timecode(deck.timecode());
 
   return 0;
 }
 
-int ltc_tc_ub() {
-  if (true) {
+int ltc_tc_ub(bool verbose) {
+  if (verbose) {
     std::cout << "Info: ltc_tc_ub." << std::endl;
   }
   deck.current_time_sense_ltc_tc_ub();
@@ -308,13 +342,13 @@ int ltc_tc_ub() {
     deck.print_nak();
   }
 
-  deck.print_timecode_userbits();
+  print_timecode_userbits(deck.timecode_userbits());
 
   return 0;
 }
 
-int vitc_tc_ub() {
-  if (true) {
+int vitc_tc_ub(bool verbose) {
+  if (verbose) {
     std::cout << "Info: vitc_tc_ub." << std::endl;
   }
   deck.current_time_sense_ltc_tc_ub();
@@ -328,7 +362,7 @@ int vitc_tc_ub() {
     deck.print_nak();
   }
 
-  deck.print_timecode_userbits();
+  print_timecode_userbits(deck.timecode_userbits());
 
   return 0;
 }
@@ -341,27 +375,44 @@ void interactive(bool& is_interactive) {
 
 int main(int argc, char* argv[]) {
   QCoreApplication coreApplication(argc, argv);
-  const int argumentCount = QCoreApplication::arguments().size();
-  const QStringList argumentList = QCoreApplication::arguments();
+  QStringList argumentList = QCoreApplication::arguments();
 
-  if (argumentCount == 1) {
-    usage(argumentList.at(0).toStdString());
+  QString commandName;
+  if (!argumentList.isEmpty())
+    commandName = argumentList.takeFirst();
+
+  bool verbose = false;
+  while (!argumentList.isEmpty())
+  {
+    if (argumentList.first() == "-h") {
+      usage(commandName.toStdString());
+      return 0;
+    }
+    else if (argumentList.first() == "-v") {
+        verbose = true;
+        cerr << "Info: verbose mode.\n";
+        argumentList.removeFirst();
+    }
+    else
+        break;
+  }
+
+  if (argumentList.isEmpty()) {
+    usage(commandName.toStdString());
     return 1;
   }
-  const auto& serialPortName = argumentList.at(1);
 
-  if (auto result = setup(serialPortName)) {
+  const auto& serialPortName = argumentList.takeFirst();
+  if (auto result = setup(serialPortName, verbose)) {
     return result;
   }
 
-  int i = 2;
   auto is_interactive = false;
-  if (argumentCount == 2) {
+  if (argumentList.isEmpty()) {
     interactive(is_interactive);
-    i--;
   }
-  while (i < argumentCount) {
-    if (const auto result = ready()) {
+  while (!argumentList.isEmpty() || is_interactive) {
+    if (const auto result = ready(verbose)) {
       return result;
     }
     char value; 
@@ -369,7 +420,7 @@ int main(int argc, char* argv[]) {
       cin.get(value);
       cin.ignore(1024, '\n');
     } else {
-      const auto& argument = argumentList[i];
+      const auto& argument = argumentList.takeFirst();
       value = argument[0].toLatin1();
     }
     switch (value) {
@@ -378,67 +429,67 @@ int main(int argc, char* argv[]) {
         break;
       }
       case '0': {
-        if (const auto result = status()) {
+        if (const auto result = status(verbose)) {
           return result;
         }
         break;
       }
       case '1': {
-        if (const auto result = type()) {
+        if (const auto result = type(verbose)) {
           return result;
         }
         break;
       }
       case '2': {
-        if (const auto result = timer1()) {
+        if (const auto result = timer1(verbose)) {
           return result;
         }
         break;
       }
       case '3': {
-        if (const auto result = timer2()) {
+        if (const auto result = timer2(verbose)) {
           return result;
         }
         break;
       }
       case '4': {
-        if (const auto result = ltc_tc_ub()) {
+        if (const auto result = ltc_tc_ub(verbose)) {
           return result;
         }
         break;
       }
       case '5': {
-        if (const auto result = vitc_tc_ub()) {
+        if (const auto result = vitc_tc_ub(verbose)) {
           return result;
         }
         break;
       }
       case 'e': {
-        if (const auto result = eject()) {
+        if (const auto result = eject(verbose)) {
           return result;
         }
         break;
       }
       case 'f': {
-        if (const auto result = fast_forward()) {
+        if (const auto result = fast_forward(verbose)) {
           return result;
         }
         break;
       }
       case 'p': {
-        if (const auto result = play()) {
+        if (const auto result = play(verbose)) {
           return result;
         }
         break;
       }
       case 'r': {
-        if (const auto result = rewind()) {
+        if (const auto result = rewind(verbose)) {
           return result;
         }
         break;
       }
       case 's': {
-        if (const auto result = stop()) {
+        if (const auto result = stop(verbose)) {
           return result;
         }
         break;
@@ -446,10 +497,6 @@ int main(int argc, char* argv[]) {
       default: {
         std::cerr << "Error: unknown command " << value << ".\n ";
       }
-    }
-
-    if (!is_interactive) {
-      i++;
     }
   }
 
