@@ -59,6 +59,32 @@ void usage(const string& commandName) {
   }
 }
 
+void print_timecode(const Sony9PinRemote::TimeCode& tc)
+{
+  cerr << "TimeCode: "
+       << setw(2) << setfill('0') << (unsigned int)tc.hour << ':'
+       << setw(2) << setfill('0') << (unsigned int)tc.minute << ':'
+       << setw(2) << setfill('0') << (unsigned int)tc.second << ';'
+       << setw(2) << setfill('0') << (unsigned int)tc.frame << ' '
+       << "CF: " << (unsigned int)tc.is_cf << ' '
+       << "DF: " << (unsigned int)tc.is_df << '\n';
+}
+
+void print_userbits(const Sony9PinRemote::UserBits& ub)
+{
+  cerr << "UserBits: "
+       << (char)ub.bytes[0] << ' '
+       << (char)ub.bytes[1] << ' '
+       << (char)ub.bytes[2] << ' '
+       << (char)ub.bytes[3] << '\n';
+}
+
+void print_timecode_userbits(const Sony9PinRemote::TimeCodeAndUserBits& tcub)
+{
+    print_timecode(tcub.tc);
+    print_userbits(tcub.ub);
+}
+
 int setup(const QString& serialPortName, bool verbose) {
   // Config
   bool portNumberIsOk = false;
@@ -275,7 +301,7 @@ int timer1(bool verbose) {
     deck.print_nak();
   }
 
-  deck.print_timecode();
+  print_timecode(deck.timecode());
 
   return 0;
 }
@@ -295,7 +321,7 @@ int timer2(bool verbose) {
     deck.print_nak();
   }
 
-  deck.print_timecode();
+  print_timecode(deck.timecode());
 
   return 0;
 }
@@ -315,7 +341,7 @@ int ltc_tc_ub(bool verbose) {
     deck.print_nak();
   }
 
-  deck.print_timecode_userbits();
+  print_timecode_userbits(deck.timecode_userbits());
 
   return 0;
 }
@@ -335,7 +361,7 @@ int vitc_tc_ub(bool verbose) {
     deck.print_nak();
   }
 
-  deck.print_timecode_userbits();
+  print_timecode_userbits(deck.timecode_userbits());
 
   return 0;
 }
