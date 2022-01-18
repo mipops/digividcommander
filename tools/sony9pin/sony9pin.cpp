@@ -197,7 +197,32 @@ int ready(bool verbose) {
   return 0;
 }
 
+int check_status_for_command()
+{
+  deck.status_sense();
+  if (!deck.parse_until(1000)) {
+    std::cerr << "Error: get device status failed.\n";
+    return 1;
+  }
+
+  if (!deck.is_remote_enabled()) {
+    std::cerr << "Error: The device is in local mode. Please switch to remote and try again.\n";
+    return 1;
+  }
+
+  if (!deck.is_media_exist()) {
+    std::cerr << "Error: The device does not contain a cassette. Please insert media and try again.\n";
+    return 1;
+  }
+
+  return 0;
+}
+
 int eject(bool verbose) {
+  if (auto result = check_status_for_command()) {
+    return result;
+  }
+
   if (verbose) {
     std::cout << "Info: eject." << std::endl;
   }
@@ -216,6 +241,10 @@ int eject(bool verbose) {
 }
 
 int fast_forward(bool verbose) {
+  if (auto result = check_status_for_command()) {
+    return result;
+  }
+
   if (verbose) {
     std::cout << "Info: fast_forward." << std::endl;
   }
@@ -234,6 +263,10 @@ int fast_forward(bool verbose) {
 }
 
 int play(bool verbose) {
+  if (auto result = check_status_for_command()) {
+    return result;
+  }
+
   if (verbose) {
     std::cout << "Info: play." << std::endl;
   }
@@ -252,6 +285,10 @@ int play(bool verbose) {
 }
 
 int rewind(bool verbose) {
+  if (auto result = check_status_for_command()) {
+    return result;
+  }
+
   if (verbose) {
     std::cout << "Info: rewind." << std::endl;
   }
@@ -270,6 +307,10 @@ int rewind(bool verbose) {
 }
 
 int stop(bool verbose) {
+  if (auto result = check_status_for_command()) {
+    return result;
+  }
+
   if (verbose) {
     std::cout << "Info: stop." << std::endl;
   }
