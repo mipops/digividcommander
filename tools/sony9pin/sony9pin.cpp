@@ -86,6 +86,19 @@ void print_timecode_userbits(const Sony9PinRemote::TimeCodeAndUserBits& tcub)
     print_userbits(tcub.ub);
 }
 
+bool test_ack()
+{
+  if (!deck.ack() && (deck.is_nak_unknown_command() ||
+                      deck.is_nak_checksum_error() ||
+                      deck.is_nak_parity_error() ||
+                      deck.is_nak_buffer_overrun() ||
+                      deck.is_nak_framing_error() ||
+                      deck.is_nak_timeout()))
+    return false;
+
+  return true;
+}
+
 int setup(const QString& serialPortName, bool verbose) {
   // Config
   bool portNumberIsOk = false;
@@ -207,7 +220,7 @@ int eject(bool verbose) {
     return 1;
   }
 
-  if (!deck.ack()) {
+  if (!test_ack()) {
     std::cout << "Info: eject issue.\n";
     deck.print_nak();
   }
@@ -225,7 +238,7 @@ int fast_forward(bool verbose) {
     return 1;
   }
 
-  if (!deck.ack()) {
+  if (!test_ack()) {
     std::cout << "Info: fast_forward issue.\n";
     deck.print_nak();
   }
@@ -243,7 +256,7 @@ int play(bool verbose) {
     return 1;
   }
 
-  if (!deck.ack()) {
+  if (!test_ack()) {
     std::cout << "Info: play issue.\n";
     deck.print_nak();
   }
@@ -261,7 +274,7 @@ int rewind(bool verbose) {
     return 1;
   }
 
-  if (!deck.ack()) {
+  if (!test_ack()) {
     std::cout << "Info: rewind issue.\n";
     deck.print_nak();
   }
@@ -279,7 +292,7 @@ int stop(bool verbose) {
     return 1;
   }
 
-  if (!deck.ack()) {
+  if (!test_ack()) {
     std::cout << "Info: stop issue.\n";
     deck.print_nak();
   }
@@ -297,7 +310,7 @@ int timer1(bool verbose) {
     return 1;
   }
 
-  if (!deck.ack()) {
+  if (!test_ack()) {
     std::cout << "Info: timer1 issue.\n";
     deck.print_nak();
   }
@@ -317,7 +330,7 @@ int timer2(bool verbose) {
     return 1;
   }
 
-  if (!deck.ack()) {
+  if (!test_ack()) {
     std::cout << "Info: timer2 issue.\n";
     deck.print_nak();
   }
@@ -337,7 +350,7 @@ int ltc_tc_ub(bool verbose) {
     return 1;
   }
 
-  if (!deck.ack()) {
+  if (!test_ack()) {
     std::cout << "Info: ltc_tc_ub issue.\n";
     deck.print_nak();
   }
@@ -357,7 +370,7 @@ int vitc_tc_ub(bool verbose) {
     return 1;
   }
 
-  if (!deck.ack()) {
+  if (!test_ack()) {
     std::cout << "Info: vitc_tc_ub issue.\n";
     deck.print_nak();
   }
