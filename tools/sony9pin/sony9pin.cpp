@@ -143,14 +143,6 @@ int status(bool verbose){
   if (!deck.is_disk_available()) {
     std::cerr << "Error: removable media is not available.\n";
   }
-  if (!deck.is_stopping()) {
-    std::cerr << "Info: stop deck.\n";
-    deck.stop();
-    if (!deck.parse_until(1000)) {
-      std::cerr << "Error: stop deck failed.\n";
-      return 1;
-    }
-  }
 
   return 0;
 }
