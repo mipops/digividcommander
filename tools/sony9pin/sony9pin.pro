@@ -8,4 +8,5 @@ QT += serialport
 INCLUDEPATH += ./
 
 # Input
-SOURCES += sony9pin.cpp
+SOURCES += sony9pin.cpp \
+           devices.cpp
