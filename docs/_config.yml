@@ -2,6 +2,7 @@ title: DVRescue
 description: Procedures and tools that will support migrating data from DV tapes into digital files suitable for long-term preservation.
 baseurl: 
 url: http://mipops.github.io/dvrescue-documentation
+markdown: kramdown
 collections: 
   sections:
     output: true
