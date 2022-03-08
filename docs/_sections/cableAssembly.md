@@ -3,7 +3,7 @@ layout: post
 title: Digital Video Commander Cable Build Instructions
 ---
 
-This documentation will explain how to build your own Digital Video Commander Cable. If you would like to learn how to test and use the custom cables, skip to step 13.
+This documentation will explain how to build your own Digital Video Commander Cable. For usage and testing of cables see the [relevant documentation](cableTesting.html).
 
 __These instructions involve the use of sharp tools such as utility knives - follow at your own risk and observe all necessary safety precautions. If you are uncomfortable handling these tools do not proceed.__ 
 
@@ -70,12 +70,8 @@ __Step 11:__ Repeat steps 8 and 9 for the outie terminal.
 
 __Step 12:__ Thread the screw fasteners through the case on the outie terminal. These allow you to screw the outie end of the cable into the back of a deck for a secure connection. Pro tip: prior to closing the case, thread the screw fasteners in and out of the holes to knock off any excess plastic that may be partially blocking the opening.
 
-__Step 13:__ Test the cable to make sure the cable works by establishing a connection between a deck and a computer using the diagram below.
+Step 12 (optional): Apply stickers. Contact MIPoPS if you would like some custom Digital Video Commander logo stickers for your cables.
 
-__Step 14:__ Install the [sony9pin CLI](https://github.com/hideakitai/Sony9PinRemote),  and run “sony9pin” in the terminal.
-
-__Step 15:__ Identify the name of your port from the list produced.
-
-__Step 16:__ Test to see if your deck responds to the DVC cable by down running the following commands in the terminal.
+Once completing these steps, you are ready to move on to testing your [cable and connection!](cableTesting.html).
 
 

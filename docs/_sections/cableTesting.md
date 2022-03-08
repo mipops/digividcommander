@@ -1,4 +1,11 @@
-__Step 1:__ Test the cable to make sure the cable works by establishing a connection between a deck and a computer using the diagram below.
+---
+layout: post
+title: Digital Video Commander Cable Use and Testing
+---
+
+__Step 1:__ Test the cable to make sure the cable works by establishing a connection between a deck and a computer using the diagram below. If your computer does not have a USB port, and adapter such as for USB-C will be necessary. (Click for full size).
+
+<a href="{{ site.baseurl }}/images/DigitalVideoCommander_DVC-Setup_V2_USB-B.png"><img alt="USB Connection" src="{{ site.baseurl }}/images/DigitalVideoCommander_DVC-Setup_V2_USB-B.png"></a>
 
 __Step 2:__ Install the [sony9pin CLI](https://github.com/hideakitai/Sony9PinRemote),  and run “sony9pin” in the terminal.
 
