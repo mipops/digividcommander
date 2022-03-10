@@ -40,7 +40,11 @@ Note that one will have 9 pins and one will have 9 holes. We shall refer to thes
 For purchasing recommendations please see our complete documentation on the Digital Video Commander website.
 
 ## Wiring Overview
-This is a diagram of MIPoPS preferred wiring colors and technique. Both the innie and outie adapters are encased in a removable plastic shell. This separate part is the terminal. The numbers along the sides of each refer to the pin that will house the corresponding colored wire on each side for each adapter. To view or download a copy of this diagram and glossary of terms, please see the documentation section of the Digital Video Commander
+See below for diagrams of MIPoPS preferred wiring colors and technique (click for full size). Both the innie and outie adapters are encased in a removable plastic shell. This separate part is the terminal. The numbers along the sides of each refer to the pin that will house the corresponding colored wire on each side for each adapter. To view or download a copy of this diagram and glossary of terms, please see the documentation section of the Digital Video Commander
+
+<a href="{{ site.baseurl }}/images/DigitalVideoCommander_Cable_WiringMap_V2_Page1.png"><img alt="Wiring map page one" src="{{ site.baseurl }}/images/DigitalVideoCommander_Cable_WiringMap_V2_Page1.png"></a>
+
+<a href="{{ site.baseurl }}/images/DigitalVideoCommander_Cable_WiringMap_V2_Page2.png"><img alt="Wiring map page two" src="{{ site.baseurl }}/images/DigitalVideoCommander_Cable_WiringMap_V2_Page2.png"></a>
 
 ## Assembly Instructions
 
