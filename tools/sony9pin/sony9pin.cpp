@@ -13,6 +13,8 @@
 #include <iterator>
 using namespace std;
 
+const char* version = "1.0";
+
 // #define SONY9PINREMOTE_DEBUGLOG_ENABLE
 #include "Sony9PinRemote/Sony9PinRemote.h"
 Sony9PinRemote::Controller deck;
@@ -21,8 +23,9 @@ QSerialPort serialPort;
 
 void options(const char* const prefix = "") {
   std::cerr << prefix << "Options:\n"
-    << prefix << "-v: verbose mode\n"
-    << prefix << "-h: show help\n"
+    << prefix << "-v, --verbose: verbose mode\n"
+    << prefix << "-V, --version: show version\n"
+    << prefix << "-h, --help: show help\n"
     ;
 }
 
@@ -427,11 +430,15 @@ int main(int argc, char* argv[]) {
   bool verbose = false;
   while (!argumentList.isEmpty())
   {
-    if (argumentList.first() == "-h") {
+    if (argumentList.first() == "--help" || argumentList.first() == "-h") {
       usage(commandName.toStdString());
       return 0;
     }
-    else if (argumentList.first() == "-v") {
+    else if (argumentList.first() == "--version" || argumentList.first() == "-V") {
+      cerr << "sony9pin v" << version << " by MIPoPS\n";
+      return 0;
+    }
+    else if (argumentList.first() == "--verbose" || argumentList.first() == "-v") {
         verbose = true;
         cerr << "Info: verbose mode.\n";
         argumentList.removeFirst();
