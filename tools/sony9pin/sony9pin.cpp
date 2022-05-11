@@ -35,6 +35,8 @@ void commands(const char* const prefix = "") {
     << prefix << "-: interactive (1-char command then enter)\n"
     << prefix << "e: eject\n"
     << prefix << "f: fast_forward\n"
+    << prefix << "x: frame_step_forward\n"
+    << prefix << "w: frame_step_reverse\n"
     << prefix << "p: play\n"
     << prefix << "r: rewind\n"
     << prefix << "s: stop\n"
@@ -349,6 +351,50 @@ int stop(bool verbose) {
   return 0;
 }
 
+int frame_step_forward(bool verbose) {
+  if (auto result = check_status_for_command()) {
+    return result;
+  }
+
+  if (verbose) {
+    std::cout << "Info: frame_step_forward." << std::endl;
+  }
+  deck.frame_step_forward();
+  if (!deck.parse_until(1000)) {
+    std::cerr << "Error: frame_step_forward failed.\n";
+    return 1;
+  }
+
+  if (!deck.ack()) {
+    std::cout << "Info: frame_step_forward issue.\n";
+    deck.print_nak();
+  }
+
+  return 0;
+}
+
+int frame_step_reverse(bool verbose) {
+  if (auto result = check_status_for_command()) {
+    return result;
+  }
+
+  if (verbose) {
+    std::cout << "Info: frame_step_reverse." << std::endl;
+  }
+  deck.frame_step_reverse();
+  if (!deck.parse_until(1000)) {
+    std::cerr << "Error: frame_step_reverse failed.\n";
+    return 1;
+  }
+
+  if (!deck.ack()) {
+    std::cout << "Info: frame_step_reverse issue.\n";
+    deck.print_nak();
+  }
+
+  return 0;
+}
+
 int timer1(bool verbose) {
   if (verbose) {
     std::cout << "Info: timer1." << std::endl;
@@ -538,6 +584,18 @@ int main(int argc, char* argv[]) {
       }
       case 'f': {
         if (const auto result = fast_forward(verbose)) {
+          return result;
+        }
+        break;
+      }
+      case 'x': {
+        if (const auto result = frame_step_forward(verbose)) {
+          return result;
+        }
+        break;
+      }
+      case 'w': {
+        if (const auto result = frame_step_reverse(verbose)) {
           return result;
         }
         break;
