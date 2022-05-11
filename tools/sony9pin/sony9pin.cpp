@@ -18,8 +18,9 @@ const char* version = "1.0";
 // #define SONY9PINREMOTE_DEBUGLOG_ENABLE
 #include "Sony9PinRemote/Sony9PinRemote.h"
 Sony9PinRemote::Controller deck;
-
 QSerialPort serialPort;
+
+extern map<uint16_t, pair<string, string>> devices;
 
 void options(const char* const prefix = "") {
   std::cerr << prefix << "Options:\n"
@@ -170,21 +171,36 @@ int status(bool verbose){
     return 1;
   }
   const auto device_type = deck.device_type();
-  std::cerr << "Info: device type is 0x" << setw(4) << setfill('0') << hex << device_type;
+  std::cerr << "Info: device_type=0x" << setw(4) << setfill('0') << hex << device_type;
+  std::string device_make;
+  std::string device_model;
   switch (device_type) {
     case Sony9PinDevice::BLACKMAGIC_HYPERDECK_STUDIO_MINI_NTSC: {
-      std::cerr << " (Blackmagic Hyperdeck Studio Mini, NTSC)";
+      device_make = "Blackmagic";
+      device_model = "Hyperdeck Studio Mini, NTSC";
       break;
     }
     case Sony9PinDevice::BLACKMAGIC_HYPERDECK_STUDIO_MINI_PAL: {
-      std::cerr << " (Blackmagic Hyperdeck Studio Mini, PAL)";
+      device_make = "Blackmagic";
+      device_model = "Hyperdeck Studio Mini, PAL";
       break;
     }
     case Sony9PinDevice::BLACKMAGIC_HYPERDECK_STUDIO_MINI_24P: {
-      std::cerr << " (Blackmagic Hyperdeck Studio Mini, NTSC)";
+      device_make = "Blackmagic";
+      device_model = "Hyperdeck Studio Mini, 24P";
       break;
+    default:
+      if (devices.find(device_type) != devices.end())
+      {
+        device_make = devices[device_type].first;
+        device_model = devices[device_type].second;
+      }
     }
   }
+  if (!device_make.empty())
+    std::cerr << ", device_make=\"" << device_make << "\"";
+  if (!device_model.empty())
+    std::cerr << ", device_model=\"" << device_model << "\"";
   std::cerr << ".\n";
 
   return 0;
