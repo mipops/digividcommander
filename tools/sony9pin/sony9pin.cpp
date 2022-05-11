@@ -60,30 +60,40 @@ void usage(const string& commandName) {
   }
 }
 
-void print_timecode(const Sony9PinRemote::TimeCode& tc)
+void print_timecode_userbits(bool print_userbits)
 {
+  Sony9PinRemote::TimeCode tc = deck.timecode();
   cerr << "TimeCode: "
        << setw(2) << setfill('0') << (unsigned int)tc.hour << ':'
        << setw(2) << setfill('0') << (unsigned int)tc.minute << ':'
        << setw(2) << setfill('0') << (unsigned int)tc.second << ';'
        << setw(2) << setfill('0') << (unsigned int)tc.frame << ' '
        << "CF: " << (unsigned int)tc.is_cf << ' '
-       << "DF: " << (unsigned int)tc.is_df << '\n';
+       << "DF: " << (unsigned int)tc.is_df;
+
+  if (print_userbits) {
+    Sony9PinRemote::UserBits ub = deck.userbits();
+    cerr << " UB: "
+         << hex << uppercase << setw(2) << setfill('0') << (unsigned int)ub.bytes[3] << ':'
+         << hex << uppercase << setw(2) << setfill('0') << (unsigned int)ub.bytes[2] << ':'
+         << hex << uppercase << setw(2) << setfill('0') << (unsigned int)ub.bytes[1] << ':'
+         << hex << uppercase << setw(2) << setfill('0') << (unsigned int)ub.bytes[0];
+  }
+
+  cerr << '\n';
 }
 
-void print_userbits(const Sony9PinRemote::UserBits& ub)
+bool test_ack()
 {
-  cerr << "UserBits: "
-       << (char)ub.bytes[0] << ' '
-       << (char)ub.bytes[1] << ' '
-       << (char)ub.bytes[2] << ' '
-       << (char)ub.bytes[3] << '\n';
-}
+  if (!deck.ack() && (deck.is_nak_unknown_command() ||
+                      deck.is_nak_checksum_error() ||
+                      deck.is_nak_parity_error() ||
+                      deck.is_nak_buffer_overrun() ||
+                      deck.is_nak_framing_error() ||
+                      deck.is_nak_timeout()))
+    return false;
 
-void print_timecode_userbits(const Sony9PinRemote::TimeCodeAndUserBits& tcub)
-{
-    print_timecode(tcub.tc);
-    print_userbits(tcub.ub);
+  return true;
 }
 
 int setup(const QString& serialPortName, bool verbose) {
@@ -224,7 +234,7 @@ int eject(bool verbose) {
     return 1;
   }
 
-  if (!deck.ack()) {
+  if (!test_ack()) {
     std::cout << "Info: eject issue.\n";
     deck.print_nak();
   }
@@ -246,7 +256,7 @@ int fast_forward(bool verbose) {
     return 1;
   }
 
-  if (!deck.ack()) {
+  if (!test_ack()) {
     std::cout << "Info: fast_forward issue.\n";
     deck.print_nak();
   }
@@ -268,7 +278,7 @@ int play(bool verbose) {
     return 1;
   }
 
-  if (!deck.ack()) {
+  if (!test_ack()) {
     std::cout << "Info: play issue.\n";
     deck.print_nak();
   }
@@ -290,7 +300,7 @@ int rewind(bool verbose) {
     return 1;
   }
 
-  if (!deck.ack()) {
+  if (!test_ack()) {
     std::cout << "Info: rewind issue.\n";
     deck.print_nak();
   }
@@ -312,7 +322,7 @@ int stop(bool verbose) {
     return 1;
   }
 
-  if (!deck.ack()) {
+  if (!test_ack()) {
     std::cout << "Info: stop issue.\n";
     deck.print_nak();
   }
@@ -330,12 +340,12 @@ int timer1(bool verbose) {
     return 1;
   }
 
-  if (!deck.ack()) {
+  if (!test_ack()) {
     std::cout << "Info: timer1 issue.\n";
     deck.print_nak();
   }
 
-  print_timecode(deck.timecode());
+  print_timecode_userbits(false);
 
   return 0;
 }
@@ -350,12 +360,12 @@ int timer2(bool verbose) {
     return 1;
   }
 
-  if (!deck.ack()) {
+  if (!test_ack()) {
     std::cout << "Info: timer2 issue.\n";
     deck.print_nak();
   }
 
-  print_timecode(deck.timecode());
+  print_timecode_userbits(false);
 
   return 0;
 }
@@ -370,12 +380,12 @@ int ltc_tc_ub(bool verbose) {
     return 1;
   }
 
-  if (!deck.ack()) {
+  if (!test_ack()) {
     std::cout << "Info: ltc_tc_ub issue.\n";
     deck.print_nak();
   }
 
-  print_timecode_userbits(deck.timecode_userbits());
+  print_timecode_userbits(true);
 
   return 0;
 }
@@ -390,12 +400,12 @@ int vitc_tc_ub(bool verbose) {
     return 1;
   }
 
-  if (!deck.ack()) {
+  if (!test_ack()) {
     std::cout << "Info: vitc_tc_ub issue.\n";
     deck.print_nak();
   }
 
-  print_timecode_userbits(deck.timecode_userbits());
+  print_timecode_userbits(true);
 
   return 0;
 }
