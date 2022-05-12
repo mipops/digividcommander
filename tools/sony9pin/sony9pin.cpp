@@ -40,6 +40,7 @@ void commands(const char* const prefix = "") {
     << prefix << "p: play\n"
     << prefix << "r: rewind\n"
     << prefix << "s: stop\n"
+    << prefix << "c <timecode in HH:mm:ss:ff format>: cue_up_with_data\n"
     << prefix << "0: status\n"
     << prefix << "1: type\n"
     << prefix << "2: timer1\n"
@@ -69,21 +70,23 @@ void usage(const string& commandName) {
 void print_timecode_userbits(bool print_userbits)
 {
   Sony9PinRemote::TimeCode tc = deck.timecode();
-  cerr << "TimeCode: "
+  cerr << "TimeCode: " << dec
        << setw(2) << setfill('0') << (unsigned int)tc.hour << ':'
        << setw(2) << setfill('0') << (unsigned int)tc.minute << ':'
        << setw(2) << setfill('0') << (unsigned int)tc.second << ';'
        << setw(2) << setfill('0') << (unsigned int)tc.frame << ' '
        << "CF: " << (unsigned int)tc.is_cf << ' '
-       << "DF: " << (unsigned int)tc.is_df;
+       << "DF: " << (unsigned int)tc.is_df
+       << resetiosflags(std::ios::dec);
 
   if (print_userbits) {
     Sony9PinRemote::UserBits ub = deck.userbits();
-    cerr << " UB: "
-         << hex << uppercase << setw(2) << setfill('0') << (unsigned int)ub.bytes[3] << ':'
-         << hex << uppercase << setw(2) << setfill('0') << (unsigned int)ub.bytes[2] << ':'
-         << hex << uppercase << setw(2) << setfill('0') << (unsigned int)ub.bytes[1] << ':'
-         << hex << uppercase << setw(2) << setfill('0') << (unsigned int)ub.bytes[0];
+    cerr << " UB: " << hex << uppercase
+         << setw(2) << setfill('0') << (unsigned int)ub.bytes[3] << ':'
+         << setw(2) << setfill('0') << (unsigned int)ub.bytes[2] << ':'
+         << setw(2) << setfill('0') << (unsigned int)ub.bytes[1] << ':'
+         << setw(2) << setfill('0') << (unsigned int)ub.bytes[0]
+         << resetiosflags(std::ios::hex|std::ios::uppercase);
   }
 
   cerr << '\n';
@@ -173,7 +176,7 @@ int status(bool verbose){
     return 1;
   }
   const auto device_type = deck.device_type();
-  std::cerr << "Info: device_type=0x" << setw(4) << setfill('0') << hex << device_type;
+  std::cerr << "Info: device_type=0x" << hex << setw(4) << setfill('0') << device_type << resetiosflags(std::ios::hex);
   std::string device_make;
   std::string device_model;
   switch (device_type) {
@@ -373,6 +376,29 @@ int frame_step_forward(bool verbose) {
   return 0;
 }
 
+int cue_up_with_data(uint8_t hh, uint8_t mm, uint8_t ss, uint8_t ff, bool verbose)
+{
+  if (auto result = check_status_for_command()) {
+    return result;
+  }
+
+  if (verbose) {
+    std::cout << "Info: cue_up_with_data." << std::endl;
+  }
+  deck.cue_up_with_data(hh + 6 * (hh / 10), mm + 6 * (mm / 10), ss + 6 * (ss / 10), ff + 6 * (ff / 10));
+  if (!deck.parse_until(1000)) {
+    std::cerr << "Error: cue_up_with_data failed.\n";
+    return 1;
+  }
+
+  if (!deck.ack()) {
+    std::cout << "Info: cue_up_with_data issue.\n";
+    deck.print_nak();
+  }
+
+  return 0;
+}
+
 int frame_step_reverse(bool verbose) {
   if (auto result = check_status_for_command()) {
     return result;
@@ -527,10 +553,11 @@ int main(int argc, char* argv[]) {
     if (const auto result = ready(verbose)) {
       return result;
     }
-    char value; 
+    char value;
+    string remains;
     if (is_interactive) {
       cin.get(value);
-      cin.ignore(1024, '\n');
+      getline(cin, remains);
     } else {
       const auto& argument = argumentList.takeFirst();
       value = argument[0].toLatin1();
@@ -614,6 +641,50 @@ int main(int argc, char* argv[]) {
       }
       case 's': {
         if (const auto result = stop(verbose)) {
+          return result;
+        }
+        break;
+      }
+      case 'c': {
+        QString param;
+        if (is_interactive) {
+          param = QString().fromStdString(remains).trimmed();
+        } else if (!argumentList.isEmpty()) {
+          param = argumentList.takeFirst();
+        }
+
+        QStringList tc = param.split(QRegExp(":|;"));
+        if (tc.size() != 4) {
+          cerr << "Error: invalid timecode " << param.toStdString() << ".\n";
+          return 1;
+        }
+
+        bool ok = false;
+        uint8_t hh = tc[0].toUShort(&ok);
+        if (!ok) {
+          cerr << "Error: invalid timecode " << param.toStdString() << ".\n";
+          return 1;
+        }
+
+        uint8_t mm = tc[1].toUShort(&ok);
+        if (!ok) {
+          cerr << "Error: invalid timecode " << param.toStdString() << ".\n";
+          return 1;
+        }
+
+        uint8_t ss = tc[2].toUShort(&ok);
+        if (!ok) {
+          cerr << "Error: invalid timecode " << param.toStdString() << ".\n";
+          return 1;
+        }
+
+        uint8_t ff = tc[3].toUShort(&ok);
+        if (!ok) {
+          cerr << "Error: invalid timecode " << param.toStdString() << ".\n";
+          return 1;
+        }
+
+        if (const auto result = cue_up_with_data(hh, mm, ss, ff, verbose)) {
           return result;
         }
         break;
