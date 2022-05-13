@@ -15,6 +15,7 @@ std::map<uint16_t, std::pair<std::string, std::string>> devices = {
   { 0x20a1, { "SONY", "SRW-5500"} },
   { 0x800c, { "SONY", "EVO-9850"} },
   { 0x8017, { "SONY", "DSR-1500A" } },
+  { 0x8031, { "SONY", "DSR-45" } },
   { 0xa015, { "Panasonic", "AU-65"} },
   { 0xa031, { "Panasonic", "AG-7750"} },
   { 0xa098, { "SONY", "PDW-F75" } },
