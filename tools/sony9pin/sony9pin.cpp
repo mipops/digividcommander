@@ -20,7 +20,7 @@ const char* version = "1.0";
 Sony9PinRemote::Controller deck;
 QSerialPort serialPort;
 
-extern map<uint16_t, pair<string, string>> devices;
+extern map<uint16_t, pair<string, vector<string>>> devices;
 
 void options(const char* const prefix = "") {
   std::cerr << prefix << "Options:\n"
@@ -198,7 +198,12 @@ int status(bool verbose){
       if (devices.find(device_type) != devices.end())
       {
         device_make = devices[device_type].first;
-        device_model = devices[device_type].second;
+        for (auto model : devices[device_type].second)
+        {
+            if (!device_model.empty())
+              device_model += ", ";
+            device_model += model;
+        }
       }
     }
   }
