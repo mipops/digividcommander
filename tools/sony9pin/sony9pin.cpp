@@ -5,25 +5,46 @@
  */
 
 #include <QCoreApplication>
+#include <QRegularExpression>
 #include <QSerialPort>
 #include <QSerialPortInfo>
+#include <QDateTime>
 #include <QThread>
 #include <iomanip>
 #include <iostream>
 #include <iterator>
+#include <sstream>
+
 using namespace std;
 
 const char* version = "1.0";
 
 // #define SONY9PINREMOTE_DEBUGLOG_ENABLE
 #include "Sony9PinRemote/Sony9PinRemote.h"
+
+bool operator!=(const sony9pin::TimeCode& first, const sony9pin::TimeCode& second) {
+  return first.is_cf != second.is_cf ||
+         first.is_df != second.is_df ||
+         first.frame != second.frame ||
+         first.second != second.second ||
+         first.minute != second.minute ||
+         first.hour != second.hour;
+}
+
+struct State {
+  Sony9PinRemote::TimeCode tc;
+  Sony9PinRemote::Status st;
+};
+
 Sony9PinRemote::Controller deck;
 QSerialPort serialPort;
+State lastState;
 
 extern map<uint16_t, pair<string, vector<string>>> devices;
 
 void options(const char* const prefix = "") {
   std::cerr << prefix << "Options:\n"
+    << prefix << "-c, --continuous: report deck state until stop bit is set\n"
     << prefix << "-v, --verbose: verbose mode\n"
     << prefix << "-V, --version: show version\n"
     << prefix << "-h, --help: show help\n"
@@ -520,7 +541,7 @@ int main(int argc, char* argv[]) {
   if (!argumentList.isEmpty())
     commandName = argumentList.takeFirst();
 
-  bool verbose = false;
+  bool verbose = false, continuous = false;
   while (!argumentList.isEmpty())
   {
     if (argumentList.first() == "--help" || argumentList.first() == "-h") {
@@ -534,6 +555,11 @@ int main(int argc, char* argv[]) {
     else if (argumentList.first() == "--verbose" || argumentList.first() == "-v") {
         verbose = true;
         cerr << "Info: verbose mode.\n";
+        argumentList.removeFirst();
+    }
+    else if (argumentList.first() == "--continuous" || argumentList.first() == "-c") {
+        continuous = true;
+        cerr << "Info: continuous mode.\n";
         argumentList.removeFirst();
     }
     else
@@ -551,7 +577,7 @@ int main(int argc, char* argv[]) {
   }
 
   auto is_interactive = false;
-  if (argumentList.isEmpty()) {
+  if (!continuous && argumentList.isEmpty()) {
     interactive(is_interactive);
   }
   while (!argumentList.isEmpty() || is_interactive) {
@@ -569,7 +595,10 @@ int main(int argc, char* argv[]) {
     }
     switch (value) {
       case '-': {
-        interactive(is_interactive);
+        if (!continuous)
+            interactive(is_interactive);
+          else
+            cerr << "Error: interactive input unavaiable in continuous mode.\n";
         break;
       }
       case '0': {
@@ -658,7 +687,7 @@ int main(int argc, char* argv[]) {
           param = argumentList.takeFirst();
         }
 
-        QStringList tc = param.split(QRegExp(":|;"));
+        QStringList tc = param.split(QRegularExpression("[:;]"));
         if (tc.size() != 4) {
           cerr << "Error: invalid timecode " << param.toStdString() << ".\n";
           return 1;
@@ -697,6 +726,191 @@ int main(int argc, char* argv[]) {
       default: {
         std::cerr << "Error: unknown command " << value << ".\n ";
       }
+    }
+  }
+
+  if (continuous) {
+    bool first=true;
+    bool stop = false;
+    while (!stop) {
+      State state;
+      bool print = false;
+
+      deck.status_sense();
+      if (!deck.parse_until(1000))
+        std::cerr << "Error: parse failed.\n";
+
+      if (!test_ack()) {
+        std::cout << "Info: parse issue.\n";
+        deck.print_nak();
+      }
+      state.st = deck.status();
+
+      deck.current_time_sense_timer1();
+      if (!deck.parse_until(1000))
+        std::cerr << "Error: parse failed.\n";
+
+      if (!test_ack()) {
+        std::cout << "Info: parse issue.\n";
+        deck.print_nak();
+      }
+      state.tc = deck.timecode();
+
+      std::stringstream ss;
+      ss << dec << ' '
+         << setw(2) << setfill('0') << (unsigned int)state.tc.hour << ':'
+         << setw(2) << setfill('0') << (unsigned int)state.tc.minute << ':'
+         << setw(2) << setfill('0') << (unsigned int)state.tc.second << ';'
+         << setw(2) << setfill('0') << (unsigned int)state.tc.frame
+         << resetiosflags(std::ios::dec);
+
+      if (first || state.tc != lastState.tc) {
+        print = true;
+      }
+
+      if (first || state.st.b_cassette_out != lastState.st.b_cassette_out) {
+        ss << " cassette_out=" << (unsigned int)state.st.b_cassette_out;
+        print = true;
+      }
+
+      if (first || state.st.b_servo_ref_missing != lastState.st.b_servo_ref_missing) {
+        ss << " servo_ref_missing=" << (unsigned int)state.st.b_servo_ref_missing;
+        print = true;
+      }
+
+      if (first || state.st.b_local != lastState.st.b_local) {
+        ss << " local=" << (unsigned int)state.st.b_local;
+        print = true;
+      }
+
+      if (first || state.st.b_standby != lastState.st.b_standby) {
+        ss << " standby=" << (unsigned int)state.st.b_standby;
+        print = true;
+      }
+
+      if (first || state.st.b_stop != lastState.st.b_stop) {
+        ss << " stop=" << (unsigned int)state.st.b_stop;
+        print = true;
+
+        if (state.st.b_stop)
+          stop = true;
+      }
+
+      if (first || state.st.b_eject != lastState.st.b_eject) {
+        ss << " eject=" << (unsigned int)state.st.b_eject;
+        print = true;
+      }
+
+      if (first || state.st.b_rewind != lastState.st.b_rewind) {
+        ss << " rewind=" << (unsigned int)state.st.b_rewind;
+        print = true;
+      }
+
+      if (first || state.st.b_forward != lastState.st.b_forward) {
+        ss << " forward=" << (unsigned int)state.st.b_forward;
+        print = true;
+      }
+
+      if (first || state.st.b_record != lastState.st.b_record) {
+        ss << " record=" << (unsigned int)state.st.b_record;
+        print = true;
+      }
+
+      if (first || state.st.b_play != lastState.st.b_play) {
+        ss << " play=" << (unsigned int)state.st.b_play;
+        print = true;
+      }
+
+      if (first || state.st.b_servo_lock != lastState.st.b_servo_lock) {
+        ss << " servo_lock=" << (unsigned int)state.st.b_servo_lock;
+        print = true;
+      }
+
+      if (first || state.st.b_tso_mode != lastState.st.b_tso_mode) {
+        ss << " tso_mode=" << (unsigned int)state.st.b_tso_mode;
+        print = true;
+      }
+
+      if (first || state.st.b_shuttle != lastState.st.b_shuttle) {
+        ss << " shuttle=" << (unsigned int)state.st.b_shuttle;
+        print = true;
+      }
+
+      if (first || state.st.b_jog != lastState.st.b_jog) {
+        ss << " jog=" << (unsigned int)state.st.b_jog;
+        print = true;
+      }
+
+      if (first || state.st.b_var != lastState.st.b_var) {
+        ss << " var=" << (unsigned int)state.st.b_var;
+        print = true;
+      }
+
+      if (first || state.st.b_direction != lastState.st.b_direction) {
+        ss << " direction=" << (unsigned int)state.st.b_direction;
+        print = true;
+      }
+
+      if (first || state.st.b_still != lastState.st.b_still) {
+        ss << " still=" << (unsigned int)state.st.b_still;
+        print = true;
+      }
+
+      if (first || state.st.b_cue_up != lastState.st.b_cue_up) {
+        ss << " cue_up=" << (unsigned int)state.st.b_cue_up;
+        print = true;
+      }
+
+      if (first || state.st.b_lamp_still != lastState.st.b_lamp_still) {
+        ss << " lamp_still=" << (unsigned int)state.st.b_lamp_still;
+        print = true;
+      }
+
+      if (first || state.st.b_lamp_fwd != lastState.st.b_lamp_fwd) {
+        ss << " lamp_fwd=" << (unsigned int)state.st.b_lamp_fwd;
+        print = true;
+      }
+
+      if (first || state.st.b_lamp_rev != lastState.st.b_lamp_rev) {
+        ss << " lamp_rev=" << (unsigned int)state.st.b_lamp_rev;
+        print = true;
+      }
+
+      if (first || state.st.b_near_eot != lastState.st.b_near_eot) {
+        ss << " near_eot=" << (unsigned int)state.st.b_near_eot;
+        print = true;
+      }
+
+      if (first || state.st.b_eot != lastState.st.b_eot) {
+        ss << " eot=" << (unsigned int)state.st.b_eot;
+        print = true;
+      }
+
+      if (first || state.st.b_cf_lock != lastState.st.b_cf_lock) {
+        ss << " cf_lock=" << (unsigned int)state.st.b_cf_lock;
+        print = true;
+      }
+
+      if (first || state.st.b_svo_alarm != lastState.st.b_svo_alarm) {
+        ss << " svo_alarm=" << (unsigned int)state.st.b_svo_alarm;
+        print = true;
+      }
+
+      if (first || state.st.b_sys_alarm != lastState.st.b_sys_alarm) {
+        ss << " sys_alarm=" << (unsigned int)state.st.b_sys_alarm;
+        print = true;
+      }
+
+      if (first || state.st.b_rec_inhib != lastState.st.b_rec_inhib) {
+        ss << " rec_inhib=" << (unsigned int)state.st.b_rec_inhib;
+        print = true;
+      }
+
+      if (print) {
+        cout << QDateTime::currentDateTime().toString(Qt::ISODateWithMs).toStdString() << ss.str() << '\n';
+        lastState=state;
+      }
+      first=false;
     }
   }
 
