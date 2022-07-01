@@ -34,6 +34,8 @@ void commands(const char* const prefix = "") {
     << prefix << "p: play\n"
     << prefix << "r: rewind\n"
     << prefix << "s: stop\n"
+    << prefix << ">: frame step forward\n"
+    << prefix << "<: frame step reverse\n"
     << prefix << "0: status\n"
     << prefix << "1: type\n"
     << prefix << "2: timer1\n"
@@ -320,6 +322,50 @@ int stop(bool verbose) {
   return 0;
 }
 
+int frame_step_forward(bool verbose) {
+  if (auto result = check_status_for_command()) {
+    return result;
+  }
+
+  if (verbose) {
+    std::cout << "Info: frame step forward." << std::endl;
+  }
+  deck.frame_step_forward();
+  if (!deck.parse_until(1000)) {
+    std::cerr << "Error: frame step forward failed.\n";
+    return 1;
+  }
+
+  if (!deck.ack()) {
+    std::cout << "Info: frame step forward issue.\n";
+    deck.print_nak();
+  }
+
+  return 0;
+}
+
+int frame_step_reverse(bool verbose) {
+  if (auto result = check_status_for_command()) {
+    return result;
+  }
+
+  if (verbose) {
+    std::cout << "Info: frame step reverse." << std::endl;
+  }
+  deck.frame_step_reverse();
+  if (!deck.parse_until(1000)) {
+    std::cerr << "Error: frame step reverse failed.\n";
+    return 1;
+  }
+
+  if (!deck.ack()) {
+    std::cout << "Info: frame step reverse issue.\n";
+    deck.print_nak();
+  }
+
+  return 0;
+}
+
 int timer1(bool verbose) {
   if (verbose) {
     std::cout << "Info: timer1." << std::endl;
@@ -523,6 +569,18 @@ int main(int argc, char* argv[]) {
       }
       case 's': {
         if (const auto result = stop(verbose)) {
+          return result;
+        }
+        break;
+      }
+      case '.': {
+        if (const auto result = frame_step_forward(verbose)) {
+          return result;
+        }
+        break;
+      }
+      case ',': {
+        if (const auto result = frame_step_reverse(verbose)) {
           return result;
         }
         break;
