@@ -7,9 +7,9 @@ __Step 1:__ Test the cable to make sure the cable works by establishing a connec
 
 <a href="{{ site.baseurl }}/images/DigitalVideoCommander_DVC-Setup_V2_USB-B.png"><img alt="USB Connection" src="{{ site.baseurl }}/images/DigitalVideoCommander_DVC-Setup_V2_USB-B.png"></a>
 
-__Step 2:__ Install the [sony9pin CLI](https://github.com/hideakitai/Sony9PinRemote),  and run “sony9pin” in the terminal.
+__Step 2:__ Install the most recent release for your system from [sony9pin CLI](https://old.mediaarea.net/download/snapshots/binary/sony9pin/). (Note: not all snapshots contain builds for all systems - you might have to check a couple to find yours).  After installing, confirm installation by running “sony9pin” in the terminal.
 
-__Step 3:__ Identify the name of your port that is being used by the cable adapter from the list produced.
+__Step 3:__ Identify the name of your port that is being used by the cable adapter from the list produced. To help with this you might try running `sony9pin -h` and then looking for "cu.usbserial-AB0L8UIT".
 
 __Step 4:__ Make sure your deck is set to remote mode and test to see if your deck responds to the DVC cable by running test commands in the following format: `sony9pin [PORT NUMBER] [option]`.
 
