@@ -155,6 +155,7 @@ std::map<uint16_t, std::pair<std::string, std::vector<std::string>>> devices = {
   { 0x8015, { "SONY", { "DSR-1800" } } },
   { 0x8016, { "SONY", { "DSR-1600" } } },
   { 0x8017, { "SONY", { "DSR-1500", "DSR-1500A" } } },
+  { 0x8019, { "SONY", { "HVR-1500" } } },
   { 0x8031, { "SONY", { "DSR-45" } } },
   { 0x9000, { "SONY", { "DEM-1000" } } },
   { 0x9010, { "SONY", { "HDDF-500" } } },
