@@ -184,6 +184,7 @@ std::map<uint16_t, std::pair<std::string, std::vector<std::string>>> devices = {
   { 0xb001, { "SONY", { "DVW-A510" } } },
   { 0xb002, { "SONY", { "DVW-CA500" } } },
   { 0xb003, { "SONY", { "DVW-CA510" } } },
+  { 0xb004, { "SONY", { "DVW-M2000" } } },
   { 0xb010, { "SONY", { "DVW-500" } } },
   { 0xb011, { "SONY", { "DVW-510" } } },
   { 0xb012, { "SONY", { "DVW-C500" } } },
