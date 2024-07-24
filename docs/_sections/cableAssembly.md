@@ -48,33 +48,29 @@ See below for diagrams of MIPoPS preferred wiring colors and technique (click fo
 
 ## Assembly Instructions
 
-__Step One:__ Cut cable to the desired length with the wire cutter. You can always get a longer 9-pin RS232 Extension Serial Cable to achieve the desired length to establish a connection between your deck and your computer.
+__Step 1:__ With the wire cutters, cut the cable to the desired length. You can always get a longer 9-pin RS232 Extension Serial Cable to achieve the desired length to establish a connection between your deck and your computer. 
 
-__Step Two:__ Slide a rubber wire grommets onto each end of the cable, with the flat end facing the end of the cable. Note that the recommended wiring adapters include three sizes of stopper (5mm, 6mm, 7mm), so use the one that fits the diameter of the cable best. So far, we have found the 6mm to work the best.
+__Step 2:__ Slide a rubber wire grommets onto each end of the cable, with the flat end facing the end of the cable. Note that the recommended wiring adapters include three sizes of stopper (5mm, 6mm, 7mm), so use the one that fits the diameter of the cable best. The 6mm fits the best. 
 
-__Step Three:__  While observing all precautions for sharp tools, use the box cutter to trim the outer casing from the cable back to about 3.5 centimeters to expose the wires inside. To do this, with the wire laying in a horizontal line, make a partial vertical cut at the 3.5 cm mark and then slice through the casing from the end of the cable to the cut you just made. Pull the casing the rest of the way off or trim with wire cutter. Cut off the shielding using the wire cutter. Pro tip: we have found that twisting all the shielding together before cutting helps to make a cleaner cut. Repeat this step for the other side.
+__Step 3:__  Place the trimmed cable on a cutting surface. With the wire laying in a horizontal line, use the box cutter to score a vertical mark along the outer casing 3.5cm down from the end of the cable (about the length of the terminal shell). Slice through the casing from the cut you just made to the end of the cable. Pull the casing the rest of the way off or trim it with the wire cutter. Cut off the shielding using the wire cutter to expose the wires inside. Repeat this step for the other side, but make your first score 0.5cm further down the wire. Trim all of the wires except the yellow and orange wire by 0.5cm. This will make it easier for them to reach their connection. Reserve this longer end for wiring the outie terminal.
 
-__Step Four:__ Trim the insulation off of 5 wires from within the cable to reveal about a 1.75 cm of the copper wire within. Our instructions are based on using the red, orange, yellow, green and blue wires, but you can use whatever color combination you want (simply substitute the colors in the wiring diagram with the colors you select. We recommend using the 0.4 millimeter trimming position to trim these wires. Repeat this step for the same colored wires on the other side.
+__Step 4:__ Using the 0.4 millimeter trimming position on the wire strippers, trim the insulation off of all 9 wires from within the cable to reveal about 0.5cm of the copper wire within. Repeat this step for the wires on the other side. On one end of the cable (to be attached to the outie end), leave the yellow and orange wires longer than the others by about a half centimeter. This will make it easier for them to reach their connection. Reserve this longer end for wiring the outie terminal.
 
-Pro tip: On one end of the cable (to be attached to the outie end), leave the yellow and orange wires longer than the others by about a half centimeter. This will make it easier for them to reach their connection. Reserve this longer end for wiring the outie terminal.
+__Step 5:__ Remove the two terminals from their plastic cases. If there is a grommet there, remove and discard it (this is usually the smallest size 5mm grommet and is too small for the 9-pin cable). First, let's wire up the innie terminal.
 
-__Step 5:__ Remove the two terminals (an innie and an outie) from their plastic cases. If there is a grommet there, remove and discard it (this is usually the smallest size 5mm grommet and is too small for the 9-pin cable) . First, let's wire up the innie terminal.
+__Step 6:__ On the innie terminal, loosen the wiring screws for pins 1, 2, 3, 4, 5, and “Gound” using the assembly flathead screwdriver. Each should open all the way to expose a pin (or “room”) within the terminal. The screw will begin to feel tight once the pin is all the way open.
 
-__Step 6:__ On the innie terminal, loosen the wiring screws for pins 1, 2, 3, 4 and 5 using the assembly flathead screwdriver. Each should open all the way to expose a pin (or “room”) within the terminal. The screw will begin to feel tight once it is all the way open.
+__Step 7:__ Our instructions are based on using the red, orange, yellow, green, and blue wires for the main connections. Using the wiring diagram as a guide, press the exposed copper wire of the 5 wires into the corresponding numbered rooms (or pins), one by one, screwing the pin shut after inserting each wire. Twist the exposed copper of the gray, black, white, and brown wires together and insert them into the “Ground” pin/room and screw the pin shut. For all 9 wires, ensure the exposed copper is completely inside the terminal and cannot come into contact with any other wires.
 
-__Step 7:__ Using the wire diagram as a guide, press the exposed copper wire of the 5 wires into the corresponding numbered rooms (or pins), one by one, and screw them shut. If you have to replace a color in our example, be sure to match that specific color in the next step. Be sure that the copper parts of each wire are within the terminal and unable to come into contact with one another. 
+__Step 8:__ On the outie terminal, unscrew pins 1, 2, 3, 7, 8, and “Ground.” Using the wiring diagram as a guide, press the exposed copper wire of the 5 wires into the corresponding numbered rooms (or pins), one by one, screwing the pin shut after inserting each wire. Twist the exposed copper of the gray, black, white, and brown wires together and insert them into the “Ground” pin/room and screw the pin shut.
 
-__Step 8:__ On the outie terminal, unscrew pins 1, 2, 3, 7 and 8 and insert the wires using wire the wiring diagram, or using any color substitutions that you made in step 7. Screw each pin shut.
+__Step 9:__ Fit the innie terminal back into the case, matching the notches in the terminal to the shape of the case. Fit the flat end of the stopper into the case and leave about 0.75cm of the cable protruding beyond the stopper and into the case.
 
-__Step 9:__ Fit the innie terminal back into the case, fitting the notches in the terminal to the shape of the case. Also fit the flat end of the stopper into the case and leave about ½ centimeter of the cable protruded beyond the stopper and into the case.
+__Step 10:__ Add the cable brace to hold the cable inside the case using the two provided screws to secure the brace on the outer part of the case and tighten it. Close the case.
 
-__Step 10:__ Add the cable brace to hold the cable inside the case and use the two screws to secure the brace on the outer part of the case and tighten it. Close the case.
+__Step 11:__ Repeat steps 9 and 10 for the outie terminal.
 
-__Step 11:__ Repeat steps 8 and 9 for the outie terminal.
-
-__Step 12:__ Thread the screw fasteners through the case on the outie terminal. These allow you to screw the outie end of the cable into the back of a deck for a secure connection. Pro tip: prior to closing the case, thread the screw fasteners in and out of the holes to knock off any excess plastic that may be partially blocking the opening.
-
-Step 12 (optional): Apply stickers. Contact MIPoPS if you would like some custom Digital Video Commander logo stickers for your cables.
+__Step 12:__ Thread the screw fasteners through the case for both terminals. These allow you to screw the ends of the cable into the back of a deck and the adapter for a secure connection.
 
 Once completing these steps, you are ready to move on to testing your [cable and connection!](cableTesting.html).
 
